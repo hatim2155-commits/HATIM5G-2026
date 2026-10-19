@@ -39,12 +39,16 @@ class App:
         self.status_lbl.pack(side=tk.LEFT)
 
         # language selection combobox
-        lang_var = tk.StringVar(value=LANGUAGES.get(current_language(), 'Русский'))
+        lang_var = tk.StringVar(value=LANGUAGES.get(current_language(), 'العربية'))
         self.lang_map = {name: code for code, name in LANGUAGES.items()}
         cb = ttk.Combobox(top, textvariable=lang_var, values=list(LANGUAGES.values()), state='readonly', width=12)
         cb.pack(side=tk.RIGHT)
         ttk.Label(top, text=t("Язык:")).pack(side=tk.RIGHT)
         cb.bind('<<ComboboxSelected>>', lambda e: self.on_lang_change(cb.get()))
+
+        # Quick English toggle button at the top labeled 'en'
+        en_btn = ttk.Button(top, text='en', width=3, command=self.set_en)
+        en_btn.pack(side=tk.RIGHT, padx=(4, 0))
 
         body = ttk.Frame(self.root, padding=10)
         body.pack(fill=tk.BOTH, expand=True)
@@ -61,7 +65,13 @@ class App:
             if label == name:
                 set_language(code)
                 break
-        # rebuild UI to apply translations (simple approach)
+        # rebuild UI by restarting the app window (simple approach)
+        self.root.destroy()
+        main()
+
+    def set_en(self):
+        set_language('en')
+        # restart UI to apply change
         self.root.destroy()
         main()
 
